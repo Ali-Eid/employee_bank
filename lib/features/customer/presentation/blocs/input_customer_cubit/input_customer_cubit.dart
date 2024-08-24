@@ -268,7 +268,8 @@ class InputCustomerCubit extends Cubit<int> {
   void setAddressModel() {
     addressModel = SetAddressModel(
         countryId: countrySelected?.id ?? 0,
-        stateId: stateSelected?.id ?? 0,
+        stateId:
+            stateSelected?.id == countrySelected?.id ? null : stateSelected?.id,
         addressType: addressTypeController.text,
         area: areaController.text,
         details: detailsController.text,

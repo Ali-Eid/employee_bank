@@ -83,6 +83,9 @@ class CachingBloc extends Bloc<CachingEvent, CachingState> {
                       !syncShow.contains(element) &&
                       !errorShow.contains(element))
                   .toList());
+              cachedShow.sort(
+                (a, b) => a.createdAt.compareTo(b.createdAt),
+              );
               emit(CachingState.successFilter(customersInput: cachedShow));
             case 1:
               cached.clear();
@@ -94,7 +97,7 @@ class CachingBloc extends Bloc<CachingEvent, CachingState> {
                         element.hasSuccess &&
                         element.hasSuccessSetAddress &&
                         element.hasSuccessSetAttributes &&
-                        element.attachments.any(
+                        element.attachments.every(
                           (element) => element.isUploaded,
                         ),
                   )

@@ -31,24 +31,24 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  Timer? _timer;
+  // Timer? _timer;
 
   @override
   void initState() {
     context.read<CachingBloc>().add(const CachingEvent.getCustomersCaching());
-    _timer = Timer.periodic(
-      const Duration(seconds: 3),
-      (timer) async {
-        context.read<CachingBloc>().add(CachingEvent.filter(
-            filterType: context.read<CachingBloc>().filterType));
-      },
-    );
+    // _timer = Timer.periodic(
+    //   const Duration(seconds: 3),
+    //   (timer) async {
+    //     context.read<CachingBloc>().add(CachingEvent.filter(
+    //         filterType: context.read<CachingBloc>().filterType));
+    //   },
+    // );
     super.initState();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    // _timer?.cancel();
     super.dispose();
   }
 
@@ -92,7 +92,7 @@ class _HomeViewState extends State<HomeView> {
                                   const CachingEvent.filter(filterType: 0));
                             },
                             child: Text(
-                              "Cached",
+                              "Processing",
                               style: context.read<CachingBloc>().filterType != 0
                                   ? Theme.of(context).textTheme.headlineMedium
                                   : Theme.of(context)
@@ -190,46 +190,37 @@ class _HomeViewState extends State<HomeView> {
                   return value.customersInput.isEmpty
                       ? const Expanded(child: Center(child: Text("No Data")))
                       : Expanded(
-                          child: SingleChildScrollView(
-                            child: Padding(
+                          child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: AppSizeW.s16),
-                              child: Column(
-                                children: value.customersInput.map(
-                                  (e) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Row(
-                                        //   mainAxisAlignment:
-                                        //       MainAxisAlignment.end,
-                                        //   children: [
-                                        //     InkWell(
-                                        //       onTap: () {
-                                        //         context.read<CachingBloc>().add(
-                                        //             CachingEvent
-                                        //                 .deleteCustomerCache(
-                                        //                     createAt:
-                                        //                         e.createdAt));
-                                        //       },
-                                        //       child: Icon(
-                                        //         Icons.delete,
-                                        //         size: AppSizeSp.s14,
-                                        //         color: ColorManager.persimmon,
-                                        //       ),
-                                        //     )
-                                        //   ],
-                                        // ),
-
-                                        CustomerTempWidget(model: e),
-                                        const Divider()
-                                      ],
-                                    );
-                                  },
-                                ).toList(),
+                              child: ListView.builder(
+                                itemCount: value.customersInput.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CustomerTempWidget(
+                                          index: index,
+                                          model: value.customersInput[index]),
+                                      const Divider()
+                                    ],
+                                  );
+                                },
+                              )
+                              // Column(
+                              //   children: value.customersInput.map(
+                              //     (e) {
+                              // return Column(
+                              //   mainAxisSize: MainAxisSize.min,
+                              //   children: [
+                              //     CustomerTempWidget(model: e),
+                              //     const Divider()
+                              //   ],
+                              // );
+                              //     },
+                              //   ).toList(),
+                              // ),
                               ),
-                            ),
-                          ),
                         );
                 },
                 orElse: () {
@@ -303,9 +294,11 @@ class _HomeViewState extends State<HomeView> {
 
 class CustomerTempWidget extends StatefulWidget {
   final InputCreateCustomerModel model;
+  final int index;
   const CustomerTempWidget({
     super.key,
     required this.model,
+    required this.index,
   });
 
   @override
@@ -327,7 +320,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
     temp = widget.model;
     // syncBloc.add(SyncEvent.createCustomer(input: widget.model));
     _timer = Timer.periodic(
-      const Duration(minutes: 2),
+      Duration(seconds: ((widget.index + 1) * 10)),
       (timer) async {
         if (await instance<NetworkInfo>().isConnected) {
           (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
@@ -1040,36 +1033,36 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
                     ),
                   ],
                 ),
-                SizedBox(width: AppSizeW.s12),
-                IconButton(
-                    onPressed: () {
-                      temp = context.read<CachingBloc>().cached.firstWhere(
-                            (element) =>
-                                element.customerId == widget.customerId,
-                          );
-                      temp = temp?.copyWith(
-                          attachments: temp?.attachments.map(
-                                (e) {
-                                  if (e.attributeId ==
-                                      widget.model.attributeId) {
-                                    e = e.copyWith(
-                                        isUploaded: false, hasError: false);
-                                  }
-                                  return e;
-                                },
-                              ).toList() ??
-                              []);
-                      context
-                          .read<CachingBloc>()
-                          .replaceCustomerInfo(customer: temp!);
-                      setAttachmentBloc.add(SetAttachmentEvent.setAttachment(
-                          customerId: widget.customerId, model: widget.model));
-                    },
-                    icon: Icon(
-                      Icons.sync,
-                      size: AppSizeSp.s16,
-                      color: ColorManager.primary,
-                    )),
+                // SizedBox(width: AppSizeW.s12),
+                // IconButton(
+                //     onPressed: () {
+                //       temp = context.read<CachingBloc>().cached.firstWhere(
+                //             (element) =>
+                //                 element.customerId == widget.customerId,
+                //           );
+                //       temp = temp?.copyWith(
+                //           attachments: temp?.attachments.map(
+                //                 (e) {
+                //                   if (e.attributeId ==
+                //                       widget.model.attributeId) {
+                //                     e = e.copyWith(
+                //                         isUploaded: false, hasError: false);
+                //                   }
+                //                   return e;
+                //                 },
+                //               ).toList() ??
+                //               []);
+                //       context
+                //           .read<CachingBloc>()
+                //           .replaceCustomerInfo(customer: temp!);
+                //       setAttachmentBloc.add(SetAttachmentEvent.setAttachment(
+                //           customerId: widget.customerId, model: widget.model));
+                //     },
+                //     icon: Icon(
+                //       Icons.sync,
+                //       size: AppSizeSp.s16,
+                //       color: ColorManager.primary,
+                //     )),
               ])
             : Row(
                 children: [

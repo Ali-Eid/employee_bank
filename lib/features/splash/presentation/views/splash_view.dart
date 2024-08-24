@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fs_bank/core/constants/assets_manager.dart';
 import 'package:fs_bank/core/constants/values_manager.dart';
@@ -19,7 +21,7 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     Timer(
-      const Duration(seconds: 3),
+      const Duration(seconds: 5),
       () {
         context.goNamed(RoutesNames.homeRoute);
       },
@@ -31,44 +33,49 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        alignment: Alignment.center,
         children: [
-          SvgPicture.asset(
-            ImageAssets.splash,
-            fit: BoxFit.fill,
+          Container(
+            height: double.infinity,
             width: double.infinity,
+            decoration: BoxDecoration(color: ColorManager.black),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: AppSizeH.s80,
-                width: AppSizeW.s80,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppSizeR.s24),
-                  image:
-                      DecorationImage(image: AssetImage(ImageAssets.bankLogo)),
-                ),
-              ),
-              SizedBox(height: AppSizeH.s32),
-              Text(
-                "Bis-Bank",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              SizedBox(height: AppSizeH.s16),
-              Row(
+          Center(
+            child: FadeInDown(
+              duration: const Duration(milliseconds: 3000),
+              //  child:Text('Agent')
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Text(
-                      "Find the best company stock for your investment",
-                      style: Theme.of(context).textTheme.displaySmall,
-                      textAlign: TextAlign.center,
+                  Image.asset(
+                    ImageAssets.logo,
+                    width: ScreenUtil.defaultSize.width * 0.6,
+                    // color: ColorManager.black,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(AppSizeW.s8),
+                    child: Column(
+                      children: [
+                        Text('Welcome',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(color: ColorManager.white)),
+                        // SizedBox(
+                        //   height: AppSizeH.s4,
+                        // ),
+                        // Text('OnBoarding app',
+                        //     style: Theme.of(context)
+                        //         .textTheme
+                        //         .labelMedium!
+                        //         .copyWith(color: ColorManager.white))
+                      ],
                     ),
                   ),
                 ],
               ),
-            ],
-          )
+            ),
+          ),
         ],
       ),
     );

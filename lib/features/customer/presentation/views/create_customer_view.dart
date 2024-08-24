@@ -149,6 +149,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller: inputCustomerCubit
                                                   .firstNameAr,
+                                              isRequired: true,
                                               title: "First Name (Arabic)",
                                               hint: "First Name (Arabic)",
                                               validator: (value) {
@@ -167,6 +168,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller:
                                                   inputCustomerCubit.lastNameAr,
+                                              isRequired: true,
                                               title: "Last Name (Arabic)",
                                               hint: "Last Name (Arabic)",
                                               validator: (value) {
@@ -185,6 +187,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller: inputCustomerCubit
                                                   .fatherNameAr,
+                                              isRequired: true,
                                               title: "Father's Name (Arabic)",
                                               hint: "Father's Name (Arabic)",
                                               validator: (value) {
@@ -203,6 +206,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller: inputCustomerCubit
                                                   .motherNameAr,
+                                              isRequired: true,
                                               title: "Mother's Name (Arabic)",
                                               hint: "Mother's Name (Arabic)",
                                               validator: (value) {
@@ -262,6 +266,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller: inputCustomerCubit
                                                   .firstNameEn,
+                                              isRequired: true,
                                               title: "First Name (English)",
                                               hint: "First Name (English)",
                                               validator: (value) {
@@ -281,6 +286,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller:
                                                   inputCustomerCubit.lastNameEn,
+                                              isRequired: true,
                                               title: "Last Name (English)",
                                               hint: "Last Name (English)",
                                               validator: (value) {
@@ -300,6 +306,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller: inputCustomerCubit
                                                   .fatherNameEn,
+                                              isRequired: true,
                                               title: "Father's Name (English)",
                                               hint: "Father's Name (English)",
                                               validator: (value) {
@@ -319,6 +326,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             InputFieldText(
                                               controller: inputCustomerCubit
                                                   .motherNameEn,
+                                              isRequired: true,
                                               title: "Mother's Name (English)",
                                               hint: "Mother's Name (English)",
                                               validator: (value) {
@@ -366,6 +374,23 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                             .textTheme
                                             .titleLarge,
                                       ),
+                                      SizedBox(width: AppSizeW.s4),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Baseline(
+                                            baseline: AppSizeH.s20,
+                                            baselineType:
+                                                TextBaseline.alphabetic,
+                                            child: Text(
+                                              "*",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                   SizedBox(height: AppSizeH.s7),
@@ -398,6 +423,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                               InputFieldText(
                                 controller:
                                     inputCustomerCubit.placeOfBirthController,
+                                isRequired: true,
                                 title: "Place of birth",
                                 hint: "Place of birth",
                                 validator: (value) {
@@ -411,6 +437,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                               InputFieldText(
                                 controller:
                                     inputCustomerCubit.phoneNumberController,
+                                isRequired: true,
                                 title: "Phone number",
                                 type: TextInputType.number,
                                 hint: "Phone number",
@@ -425,6 +452,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                               InputFieldText(
                                 controller:
                                     inputCustomerCubit.mobileNumberController,
+                                isRequired: true,
                                 title: "Mobile number",
                                 type: TextInputType.number,
                                 hint: "Mobile number",
@@ -438,19 +466,48 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                               SizedBox(height: AppSizeH.s16),
                               InputFieldText(
                                 controller: inputCustomerCubit.emailController,
+                                isRequired: true,
                                 title: "Email",
                                 hint: "Email",
                                 type: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your email.';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: AppSizeH.s16),
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Templates",
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "National",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      SizedBox(width: AppSizeW.s4),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Baseline(
+                                            baseline: AppSizeH.s20,
+                                            baselineType:
+                                                TextBaseline.alphabetic,
+                                            child: Text(
+                                              "*",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                   SizedBox(height: AppSizeH.s7),
                                   BlocBuilder(
@@ -459,14 +516,14 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                       return DropDownStaticWidget(
                                         validator: (value) {
                                           if (value == null) {
-                                            return 'Please select Template.';
+                                            return 'Please select national.';
                                           }
                                           return null;
                                         },
                                         items: context
                                             .read<StaticBloc>()
                                             .templates,
-                                        label: "Templates",
+                                        label: "National",
                                         onChanged: (value) {
                                           inputCustomerCubit.setTemplate(value);
                                         },
@@ -616,6 +673,7 @@ class InputFieldText extends StatelessWidget {
   final TextEditingController controller;
   final String? hint;
   final String title;
+  final bool isRequired;
   final TextInputType? type;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
@@ -628,6 +686,7 @@ class InputFieldText extends StatelessWidget {
     this.inputFormatters,
     this.validator,
     this.type,
+    required this.isRequired,
   });
 
   @override
@@ -636,9 +695,29 @@ class InputFieldText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
+        Row(
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(width: AppSizeW.s4),
+            isRequired
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Baseline(
+                        baseline: AppSizeH.s20,
+                        baselineType: TextBaseline.alphabetic,
+                        child: Text(
+                          "*",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox()
+          ],
         ),
         SizedBox(height: AppSizeH.s7),
         TextFormField(

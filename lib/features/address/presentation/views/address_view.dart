@@ -44,7 +44,13 @@ class _AddressViewState extends State<AddressView> {
         bloc: context.read<InputCustomerCubit>(),
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(
+                "Address",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
             // backgroundColor: ColorManager.background,
             body: Form(
               key: _formKey,
@@ -62,9 +68,32 @@ class _AddressViewState extends State<AddressView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  "Country",
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Country",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                    SizedBox(width: AppSizeW.s4),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(width: AppSizeW.s4),
+                                        Baseline(
+                                          baseline: AppSizeH.s20,
+                                          baselineType: TextBaseline.alphabetic,
+                                          child: Text(
+                                            "*",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
                                 ),
                                 SizedBox(height: AppSizeH.s7),
                                 BlocBuilder(
@@ -102,9 +131,32 @@ class _AddressViewState extends State<AddressView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  "State",
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                Row(
+                                  children: [
+                                    Text(
+                                      "State",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                    SizedBox(width: AppSizeW.s4),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(width: AppSizeW.s4),
+                                        Baseline(
+                                          baseline: AppSizeH.s20,
+                                          baselineType: TextBaseline.alphabetic,
+                                          child: Text(
+                                            "*",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
                                 ),
                                 SizedBox(height: AppSizeH.s7),
                                 BlocBuilder(
@@ -171,6 +223,7 @@ class _AddressViewState extends State<AddressView> {
                             ),
                             SizedBox(height: AppSizeH.s6),
                             InputAddressField(
+                              isRequired: true,
                               controller: context
                                   .read<InputCustomerCubit>()
                                   .areaController,
@@ -184,6 +237,7 @@ class _AddressViewState extends State<AddressView> {
                             ),
                             SizedBox(height: AppSizeH.s6),
                             InputAddressField(
+                              isRequired: true,
                               controller: context
                                   .read<InputCustomerCubit>()
                                   .streetController,
@@ -197,6 +251,7 @@ class _AddressViewState extends State<AddressView> {
                             ),
                             SizedBox(height: AppSizeH.s6),
                             InputAddressField(
+                              isRequired: true,
                               controller: context
                                   .read<InputCustomerCubit>()
                                   .detailsController,
@@ -210,6 +265,7 @@ class _AddressViewState extends State<AddressView> {
                             ),
                             SizedBox(height: AppSizeH.s6),
                             InputAddressField(
+                              isRequired: true,
                               type: TextInputType.number,
                               controller: context
                                   .read<InputCustomerCubit>()
@@ -224,6 +280,7 @@ class _AddressViewState extends State<AddressView> {
                             ),
                             SizedBox(height: AppSizeH.s6),
                             InputAddressField(
+                              isRequired: true,
                               controller: context
                                   .read<InputCustomerCubit>()
                                   .addressTypeController,
@@ -245,6 +302,25 @@ class _AddressViewState extends State<AddressView> {
                     padding: EdgeInsets.all(AppSizeW.s16),
                     child: Row(
                       children: [
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.all(ColorManager.white),
+                              shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(AppSizeR.s8),
+                                      side: BorderSide(
+                                          color: ColorManager.primary)))),
+                          onPressed: () {
+                            context.pop();
+                          },
+                          child: Text(
+                            "Back",
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                        ),
+                        SizedBox(width: AppSizeW.s8),
                         Expanded(
                             child: ElevatedButton(
                                 onPressed: () {
@@ -289,7 +365,7 @@ class _AddressViewState extends State<AddressView> {
                                             attachments: context.read<InputCustomerCubit>().attachments)));
                                   }
                                 },
-                                child: const Text("Set Address"))),
+                                child: const Text("Set address"))),
                       ],
                     ),
                   ),
@@ -307,6 +383,7 @@ class InputAddressField extends StatelessWidget {
   final TextEditingController controller;
   final String? hint;
   final String title;
+  final bool isRequired;
   final TextInputType? type;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
@@ -319,6 +396,7 @@ class InputAddressField extends StatelessWidget {
     this.type,
     this.inputFormatters,
     this.validator,
+    required this.isRequired,
   });
 
   @override
@@ -327,9 +405,30 @@ class InputAddressField extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
+        Row(
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(width: AppSizeW.s4),
+            isRequired
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(width: AppSizeW.s4),
+                      Baseline(
+                        baseline: AppSizeH.s20,
+                        baselineType: TextBaseline.alphabetic,
+                        child: Text(
+                          "*",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox()
+          ],
         ),
         SizedBox(height: AppSizeH.s7),
         TextFormField(

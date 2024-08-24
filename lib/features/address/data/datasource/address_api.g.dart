@@ -96,7 +96,7 @@ class _AddressServiceClient implements AddressServiceClient {
   Future<HttpResponse<ResponseModel<AddressModel>>> setAddress({
     required int customerId,
     required int countryId,
-    required int stateId,
+    int? stateId,
     required String area,
     required String street,
     required String details,
@@ -106,6 +106,7 @@ class _AddressServiceClient implements AddressServiceClient {
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = {
       'customer_id': customerId,
@@ -118,6 +119,7 @@ class _AddressServiceClient implements AddressServiceClient {
       'address_type': addressType,
       'is_default': isDefault,
     };
+    _data.removeWhere((k, v) => v == null);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<ResponseModel<AddressModel>>>(Options(
       method: 'POST',

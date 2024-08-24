@@ -45,7 +45,13 @@ class _AttachmentsViewState extends State<AttachmentsView> {
       bloc: context.read<InputCustomerCubit>(),
       builder: (context, state) {
         return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(
+                "Attachments",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
             backgroundColor: ColorManager.background,
             body: attachments.isEmpty
                 ? Center(
@@ -56,79 +62,135 @@ class _AttachmentsViewState extends State<AttachmentsView> {
                   )
                 : Form(
                     key: _formKey,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: attachments.map(
-                              (e) {
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: AppSizeW.s16,
-                                      vertical: AppSizeH.s6),
-                                  child: Container(
-                                      padding: EdgeInsets.all(AppSizeW.s8),
-                                      decoration: BoxDecoration(
-                                          color: ColorManager.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 4),
-                                                color: ColorManager.grey3,
-                                                blurRadius: AppSizeR.s5)
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: attachments.map(
+                                (e) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: AppSizeW.s16,
+                                        vertical: AppSizeH.s6),
+                                    child: Container(
+                                        padding: EdgeInsets.all(AppSizeW.s8),
+                                        decoration: BoxDecoration(
+                                            color: ColorManager.white,
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       offset: const Offset(0, 4),
+                                            //       color: ColorManager.grey3,
+                                            //       blurRadius: AppSizeR.s5)
+                                            // ],
+                                            borderRadius: BorderRadius.circular(
+                                                AppSizeR.s12)),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  e.label,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge,
+                                                ),
+                                                SizedBox(width: AppSizeW.s4),
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                        width: AppSizeW.s4),
+                                                    e.isRequired
+                                                        ? Baseline(
+                                                            baseline:
+                                                                AppSizeH.s20,
+                                                            baselineType:
+                                                                TextBaseline
+                                                                    .alphabetic,
+                                                            child: Text(
+                                                              "*",
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .titleLarge,
+                                                            ),
+                                                          )
+                                                        : const SizedBox(),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(height: AppSizeH.s7),
+                                            // Divider(color: ColorManager.grey3),
+                                            getByType(
+                                                context,
+                                                context
+                                                    .read<InputCustomerCubit>(),
+                                                e),
                                           ],
-                                          borderRadius: BorderRadius.circular(
-                                              AppSizeR.s12)),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(e.label),
-                                          Divider(color: ColorManager.grey3),
-                                          getByType(
-                                              context,
-                                              context
-                                                  .read<InputCustomerCubit>(),
-                                              e),
-                                        ],
-                                      )),
-                                );
-                              },
-                            ).toList(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(AppSizeW.s16),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            context.goNamed(
-                                                RoutesNames
-                                                    .addressCustomersRoute,
-                                                pathParameters: {
-                                                  "templateId": context
-                                                          .read<
-                                                              InputCustomerCubit>()
-                                                          .template
-                                                          ?.id
-                                                          .toString() ??
-                                                      "0"
-                                                },
-                                                extra: context.read<
-                                                    InputCustomerCubit>());
-                                          }
-                                        },
-                                        child: const Text("set attachments"))),
-                              ],
+                                        )),
+                                  );
+                                },
+                              ).toList(),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(AppSizeW.s16),
+                          child: Row(
+                            children: [
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: WidgetStateProperty.all(
+                                        ColorManager.white),
+                                    shape: WidgetStateProperty.all(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                AppSizeR.s8),
+                                            side: BorderSide(
+                                                color: ColorManager.primary)))),
+                                onPressed: () {
+                                  context.pop();
+                                },
+                                child: Text(
+                                  "Back",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium,
+                                ),
+                              ),
+                              SizedBox(width: AppSizeW.s8),
+                              Expanded(
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          context.goNamed(
+                                              RoutesNames.addressCustomersRoute,
+                                              pathParameters: {
+                                                "templateId": context
+                                                        .read<
+                                                            InputCustomerCubit>()
+                                                        .template
+                                                        ?.id
+                                                        .toString() ??
+                                                    "0"
+                                              },
+                                              extra: context
+                                                  .read<InputCustomerCubit>());
+                                        }
+                                      },
+                                      child: const Text("Set attachments"))),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ));
       },

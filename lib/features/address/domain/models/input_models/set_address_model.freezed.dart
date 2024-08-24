@@ -21,9 +21,9 @@ SetAddressModel _$SetAddressModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SetAddressModel {
   @JsonKey(name: "country_id")
-  int get countryId => throw _privateConstructorUsedError;
+  int get countryId => throw _privateConstructorUsedError; // @Default(0)
   @JsonKey(name: "state_id")
-  int get stateId => throw _privateConstructorUsedError;
+  int? get stateId => throw _privateConstructorUsedError;
   String get area => throw _privateConstructorUsedError;
   String get street => throw _privateConstructorUsedError;
   String get details => throw _privateConstructorUsedError;
@@ -48,7 +48,7 @@ abstract class $SetAddressModelCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: "country_id") int countryId,
-      @JsonKey(name: "state_id") int stateId,
+      @JsonKey(name: "state_id") int? stateId,
       String area,
       String street,
       String details,
@@ -71,7 +71,7 @@ class _$SetAddressModelCopyWithImpl<$Res, $Val extends SetAddressModel>
   @override
   $Res call({
     Object? countryId = null,
-    Object? stateId = null,
+    Object? stateId = freezed,
     Object? area = null,
     Object? street = null,
     Object? details = null,
@@ -84,10 +84,10 @@ class _$SetAddressModelCopyWithImpl<$Res, $Val extends SetAddressModel>
           ? _value.countryId
           : countryId // ignore: cast_nullable_to_non_nullable
               as int,
-      stateId: null == stateId
+      stateId: freezed == stateId
           ? _value.stateId
           : stateId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       area: null == area
           ? _value.area
           : area // ignore: cast_nullable_to_non_nullable
@@ -126,7 +126,7 @@ abstract class _$$SetAddressModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: "country_id") int countryId,
-      @JsonKey(name: "state_id") int stateId,
+      @JsonKey(name: "state_id") int? stateId,
       String area,
       String street,
       String details,
@@ -147,7 +147,7 @@ class __$$SetAddressModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? countryId = null,
-    Object? stateId = null,
+    Object? stateId = freezed,
     Object? area = null,
     Object? street = null,
     Object? details = null,
@@ -160,10 +160,10 @@ class __$$SetAddressModelImplCopyWithImpl<$Res>
           ? _value.countryId
           : countryId // ignore: cast_nullable_to_non_nullable
               as int,
-      stateId: null == stateId
+      stateId: freezed == stateId
           ? _value.stateId
           : stateId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       area: null == area
           ? _value.area
           : area // ignore: cast_nullable_to_non_nullable
@@ -197,7 +197,7 @@ class __$$SetAddressModelImplCopyWithImpl<$Res>
 class _$SetAddressModelImpl implements _SetAddressModel {
   const _$SetAddressModelImpl(
       {@JsonKey(name: "country_id") this.countryId = 0,
-      @JsonKey(name: "state_id") this.stateId = 0,
+      @JsonKey(name: "state_id") this.stateId,
       this.area = "",
       this.street = "",
       this.details = "",
@@ -211,9 +211,10 @@ class _$SetAddressModelImpl implements _SetAddressModel {
   @override
   @JsonKey(name: "country_id")
   final int countryId;
+// @Default(0)
   @override
   @JsonKey(name: "state_id")
-  final int stateId;
+  final int? stateId;
   @override
   @JsonKey()
   final String area;
@@ -280,7 +281,7 @@ class _$SetAddressModelImpl implements _SetAddressModel {
 abstract class _SetAddressModel implements SetAddressModel {
   const factory _SetAddressModel(
           {@JsonKey(name: "country_id") final int countryId,
-          @JsonKey(name: "state_id") final int stateId,
+          @JsonKey(name: "state_id") final int? stateId,
           final String area,
           final String street,
           final String details,
@@ -295,9 +296,9 @@ abstract class _SetAddressModel implements SetAddressModel {
   @override
   @JsonKey(name: "country_id")
   int get countryId;
-  @override
+  @override // @Default(0)
   @JsonKey(name: "state_id")
-  int get stateId;
+  int? get stateId;
   @override
   String get area;
   @override

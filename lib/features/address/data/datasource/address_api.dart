@@ -25,7 +25,7 @@ abstract class AddressServiceClient {
   Future<HttpResponse<ResponseModel<AddressModel>>> setAddress({
     @Field("customer_id") required int customerId,
     @Field("country_id") required int countryId,
-    @Field("state_id") required int stateId,
+    @Field("state_id") int? stateId,
     @Field("area") required String area,
     @Field("street") required String street,
     @Field("details") required String details,

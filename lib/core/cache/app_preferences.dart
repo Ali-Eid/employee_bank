@@ -119,7 +119,7 @@ class AppPreferences {
   }
 
   Future<List<InputCreateCustomerModel>> getCustomersInput() async {
-    String? customersCached =
+    String? customersCached =                                 
         _sharedPreferences.getString(PREFS_KEY_CUSTOMERS_INPUTS);
     if (customersCached != null && customersCached.isNotEmpty) {
       List<dynamic> decodedData = jsonDecode(customersCached);

@@ -10,7 +10,7 @@ _$SetAddressModelImpl _$$SetAddressModelImplFromJson(
         Map<String, dynamic> json) =>
     _$SetAddressModelImpl(
       countryId: (json['country_id'] as num?)?.toInt() ?? 0,
-      stateId: (json['state_id'] as num?)?.toInt() ?? 0,
+      stateId: (json['state_id'] as num?)?.toInt(),
       area: json['area'] as String? ?? "",
       street: json['street'] as String? ?? "",
       details: json['details'] as String? ?? "",
