@@ -21,6 +21,7 @@ class AllAttributesBloc extends Bloc<AllAttributesEvent, AllAttributesState> {
     on<AllAttributesEvent>((event, emit) async {
       await event.map(
         getAllAttributes: (value) async {
+          allAttributes.clear();
           allAttributes.addAll(await appPreferences.getAllAttributes());
           emit(const AllAttributesState.loading());
           final failureOrSuccess =
@@ -28,6 +29,7 @@ class AllAttributesBloc extends Bloc<AllAttributesEvent, AllAttributesState> {
           await failureOrSuccess.when(
             (success) async {
               await appPreferences.setAllAttributes(attributes: success.data);
+              allAttributes.clear();
               allAttributes.addAll(success.data);
 
               emit(AllAttributesState.loaded(attributes: success));

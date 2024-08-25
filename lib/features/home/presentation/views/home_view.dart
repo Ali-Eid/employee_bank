@@ -311,7 +311,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
   late SetAddressBloc setAddressBloc;
 
   InputCreateCustomerModel? temp;
-  Timer? _timer;
+  // Timer? _timer;
   @override
   void initState() {
     syncBloc = instance<SyncBloc>();
@@ -319,22 +319,26 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
     setAddressBloc = instance<SetAddressBloc>();
     temp = widget.model;
     // syncBloc.add(SyncEvent.createCustomer(input: widget.model));
-    _timer = Timer.periodic(
-      Duration(seconds: ((widget.index + 1) * 10)),
-      (timer) async {
-        if (await instance<NetworkInfo>().isConnected) {
-          (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
+   (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
               ? null
               : syncBloc.add(SyncEvent.createCustomer(input: widget.model));
-        }
-      },
-    );
+
+    // _timer = Timer.periodic(
+    //   Duration(seconds: ((widget.index + 1) * 10)),
+    //   (timer) async {
+        // if (await instance<NetworkInfo>().isConnected) {
+        //   (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
+        //       ? null
+        //       : syncBloc.add(SyncEvent.createCustomer(input: widget.model));
+        // }
+    //   },
+    // );
     super.initState();
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    // _timer?.cancel();
     super.dispose();
   }
 
