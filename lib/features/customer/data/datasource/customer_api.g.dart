@@ -22,7 +22,7 @@ class _CustomerServiceClient implements CustomerServiceClient {
 
   @override
   Future<HttpResponse<ResponseModel<CustomerModel>>> createCustomer(
-      {required InputCreateCustomerModel input}) async {
+      {required CreateCustomerModel input}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

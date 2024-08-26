@@ -7,6 +7,7 @@ import 'package:multiple_result/src/result.dart';
 
 import '../../../../core/bases/models/response_model/response_model.dart';
 import '../../../../core/network/network_info.dart';
+import '../../domain/models/input_create_customer_model/create_customer_model/create_customer_model.dart';
 import '../datasource/customer_api.dart';
 
 class CustomerRepositoryImpl implements CustomerRepository {
@@ -17,7 +18,7 @@ class CustomerRepositoryImpl implements CustomerRepository {
       {required this.customerServiceClient, required this.networkInfo});
   @override
   Future<Result<ResponseModel<CustomerModel>, FailureModel>> createCustomer(
-      {required InputCreateCustomerModel cusotmer}) async {
+      {required CreateCustomerModel cusotmer}) async {
     if (await networkInfo.isConnected) {
       try {
         final response =

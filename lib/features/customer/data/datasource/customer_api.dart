@@ -6,6 +6,7 @@ import '../../../../core/constants/endpoints.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../domain/models/input_create_customer_model/create_customer_model/create_customer_model.dart';
 import '../../domain/models/input_create_customer_model/input_create_customer_model.dart';
 part 'customer_api.g.dart';
 
@@ -16,5 +17,5 @@ abstract class CustomerServiceClient {
 
   @POST(Endpoints.CREATE_CUSTOMER)
   Future<HttpResponse<ResponseModel<CustomerModel>>> createCustomer(
-      {@Body() required InputCreateCustomerModel input});
+      {@Body() required CreateCustomerModel input});
 }

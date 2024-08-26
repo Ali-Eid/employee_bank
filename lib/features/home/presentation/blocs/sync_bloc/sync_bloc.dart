@@ -4,6 +4,7 @@ import 'package:fs_bank/core/cache/app_preferences.dart';
 
 import '../../../../../core/bases/models/response_model/response_model.dart';
 import '../../../../customer/domain/models/customer_model/customer_model.dart';
+import '../../../../customer/domain/models/input_create_customer_model/create_customer_model/create_customer_model.dart';
 import '../../../../customer/domain/models/input_create_customer_model/input_create_customer_model.dart';
 import '../../../../customer/domain/usecases/customer_usecases.dart';
 

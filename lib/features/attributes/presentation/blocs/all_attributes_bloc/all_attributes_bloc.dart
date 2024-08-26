@@ -4,6 +4,7 @@ import 'package:fs_bank/core/bases/models/response_model/response_model.dart';
 import 'package:fs_bank/core/cache/app_preferences.dart';
 import 'package:fs_bank/features/attributes/domain/models/set_attributes_model/set_attribute_model.dart';
 import 'package:fs_bank/features/attributes/domain/usecases/attributes_usecases.dart';
+import 'package:fs_bank/main.dart';
 
 import '../../../domain/models/attributes_model/attributes_model.dart';
 
@@ -28,7 +29,8 @@ class AllAttributesBloc extends Bloc<AllAttributesEvent, AllAttributesState> {
               await getAllAttributesUsecase.execute((type: value.type));
           await failureOrSuccess.when(
             (success) async {
-              await appPreferences.setAllAttributes(attributes: success.data);
+              // await appPreferences.setAllAttributes(attributes: success.data);
+              await objectBox.addAllAttributes(success.data);
               allAttributes.clear();
               allAttributes.addAll(success.data);
 

@@ -5,10 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/app/app.dart';
 import 'core/app/bloc_observer.dart';
 import 'core/app/depndency_injection.dart';
+import 'core/db/objectbox.dart';
 import 'core/localization/language_manager.dart';
 
+late ObjectBox objectBox;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  objectBox = await ObjectBox.create();
   await EasyLocalization.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
   EasyLocalization.logger.enableBuildModes = [];

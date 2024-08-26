@@ -16,36 +16,36 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SyncEvent {
-  InputCreateCustomerModel get input => throw _privateConstructorUsedError;
+  CreateCustomerModel get input => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(InputCreateCustomerModel input) createCustomer,
+    required TResult Function(CreateCustomerModel input) createCustomer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(InputCreateCustomerModel input)? createCustomer,
+    TResult? Function(CreateCustomerModel input)? createCustomer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(InputCreateCustomerModel input)? createCustomer,
+    TResult Function(CreateCustomerModel input)? createCustomer,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Started value) createCustomer,
+    required TResult Function(_CreateBasicCustomer value) createCustomer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Started value)? createCustomer,
+    TResult? Function(_CreateBasicCustomer value)? createCustomer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Started value)? createCustomer,
+    TResult Function(_CreateBasicCustomer value)? createCustomer,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -60,9 +60,9 @@ abstract class $SyncEventCopyWith<$Res> {
   factory $SyncEventCopyWith(SyncEvent value, $Res Function(SyncEvent) then) =
       _$SyncEventCopyWithImpl<$Res, SyncEvent>;
   @useResult
-  $Res call({InputCreateCustomerModel input});
+  $Res call({CreateCustomerModel input});
 
-  $InputCreateCustomerModelCopyWith<$Res> get input;
+  $CreateCustomerModelCopyWith<$Res> get input;
 }
 
 /// @nodoc
@@ -84,39 +84,39 @@ class _$SyncEventCopyWithImpl<$Res, $Val extends SyncEvent>
       input: null == input
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
-              as InputCreateCustomerModel,
+              as CreateCustomerModel,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $InputCreateCustomerModelCopyWith<$Res> get input {
-    return $InputCreateCustomerModelCopyWith<$Res>(_value.input, (value) {
+  $CreateCustomerModelCopyWith<$Res> get input {
+    return $CreateCustomerModelCopyWith<$Res>(_value.input, (value) {
       return _then(_value.copyWith(input: value) as $Val);
     });
   }
 }
 
 /// @nodoc
-abstract class _$$StartedImplCopyWith<$Res>
+abstract class _$$CreateBasicCustomerImplCopyWith<$Res>
     implements $SyncEventCopyWith<$Res> {
-  factory _$$StartedImplCopyWith(
-          _$StartedImpl value, $Res Function(_$StartedImpl) then) =
-      __$$StartedImplCopyWithImpl<$Res>;
+  factory _$$CreateBasicCustomerImplCopyWith(_$CreateBasicCustomerImpl value,
+          $Res Function(_$CreateBasicCustomerImpl) then) =
+      __$$CreateBasicCustomerImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({InputCreateCustomerModel input});
+  $Res call({CreateCustomerModel input});
 
   @override
-  $InputCreateCustomerModelCopyWith<$Res> get input;
+  $CreateCustomerModelCopyWith<$Res> get input;
 }
 
 /// @nodoc
-class __$$StartedImplCopyWithImpl<$Res>
-    extends _$SyncEventCopyWithImpl<$Res, _$StartedImpl>
-    implements _$$StartedImplCopyWith<$Res> {
-  __$$StartedImplCopyWithImpl(
-      _$StartedImpl _value, $Res Function(_$StartedImpl) _then)
+class __$$CreateBasicCustomerImplCopyWithImpl<$Res>
+    extends _$SyncEventCopyWithImpl<$Res, _$CreateBasicCustomerImpl>
+    implements _$$CreateBasicCustomerImplCopyWith<$Res> {
+  __$$CreateBasicCustomerImplCopyWithImpl(_$CreateBasicCustomerImpl _value,
+      $Res Function(_$CreateBasicCustomerImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -124,22 +124,22 @@ class __$$StartedImplCopyWithImpl<$Res>
   $Res call({
     Object? input = null,
   }) {
-    return _then(_$StartedImpl(
+    return _then(_$CreateBasicCustomerImpl(
       input: null == input
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
-              as InputCreateCustomerModel,
+              as CreateCustomerModel,
     ));
   }
 }
 
 /// @nodoc
 
-class _$StartedImpl implements _Started {
-  const _$StartedImpl({required this.input});
+class _$CreateBasicCustomerImpl implements _CreateBasicCustomer {
+  const _$CreateBasicCustomerImpl({required this.input});
 
   @override
-  final InputCreateCustomerModel input;
+  final CreateCustomerModel input;
 
   @override
   String toString() {
@@ -150,7 +150,7 @@ class _$StartedImpl implements _Started {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$StartedImpl &&
+            other is _$CreateBasicCustomerImpl &&
             (identical(other.input, input) || other.input == input));
   }
 
@@ -160,13 +160,14 @@ class _$StartedImpl implements _Started {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$StartedImplCopyWith<_$StartedImpl> get copyWith =>
-      __$$StartedImplCopyWithImpl<_$StartedImpl>(this, _$identity);
+  _$$CreateBasicCustomerImplCopyWith<_$CreateBasicCustomerImpl> get copyWith =>
+      __$$CreateBasicCustomerImplCopyWithImpl<_$CreateBasicCustomerImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(InputCreateCustomerModel input) createCustomer,
+    required TResult Function(CreateCustomerModel input) createCustomer,
   }) {
     return createCustomer(input);
   }
@@ -174,7 +175,7 @@ class _$StartedImpl implements _Started {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(InputCreateCustomerModel input)? createCustomer,
+    TResult? Function(CreateCustomerModel input)? createCustomer,
   }) {
     return createCustomer?.call(input);
   }
@@ -182,7 +183,7 @@ class _$StartedImpl implements _Started {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(InputCreateCustomerModel input)? createCustomer,
+    TResult Function(CreateCustomerModel input)? createCustomer,
     required TResult orElse(),
   }) {
     if (createCustomer != null) {
@@ -194,7 +195,7 @@ class _$StartedImpl implements _Started {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Started value) createCustomer,
+    required TResult Function(_CreateBasicCustomer value) createCustomer,
   }) {
     return createCustomer(this);
   }
@@ -202,7 +203,7 @@ class _$StartedImpl implements _Started {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Started value)? createCustomer,
+    TResult? Function(_CreateBasicCustomer value)? createCustomer,
   }) {
     return createCustomer?.call(this);
   }
@@ -210,7 +211,7 @@ class _$StartedImpl implements _Started {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Started value)? createCustomer,
+    TResult Function(_CreateBasicCustomer value)? createCustomer,
     required TResult orElse(),
   }) {
     if (createCustomer != null) {
@@ -220,15 +221,15 @@ class _$StartedImpl implements _Started {
   }
 }
 
-abstract class _Started implements SyncEvent {
-  const factory _Started({required final InputCreateCustomerModel input}) =
-      _$StartedImpl;
+abstract class _CreateBasicCustomer implements SyncEvent {
+  const factory _CreateBasicCustomer(
+      {required final CreateCustomerModel input}) = _$CreateBasicCustomerImpl;
 
   @override
-  InputCreateCustomerModel get input;
+  CreateCustomerModel get input;
   @override
   @JsonKey(ignore: true)
-  _$$StartedImplCopyWith<_$StartedImpl> get copyWith =>
+  _$$CreateBasicCustomerImplCopyWith<_$CreateBasicCustomerImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

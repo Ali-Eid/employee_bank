@@ -7,17 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fs_bank/core/cache/app_preferences.dart';
 import 'package:fs_bank/core/constants/values_manager.dart';
+import 'package:fs_bank/core/db/customer_table/customer_table_model.dart';
 import 'package:fs_bank/core/network/network_info.dart';
 import 'package:fs_bank/core/routers/routes_manager.dart';
 import 'package:fs_bank/core/themes/color_manager.dart';
 import 'package:fs_bank/features/address/domain/models/input_models/set_address_model.dart';
 import 'package:fs_bank/features/attributes/domain/models/set_attachments_model/set_attachments_model.dart';
 import 'package:fs_bank/features/attributes/presentation/blocs/set_attachment_bloc/set_attachment_bloc.dart';
+import 'package:fs_bank/features/customer/domain/models/input_create_customer_model/create_customer_model/create_customer_model.dart';
 import 'package:fs_bank/features/customer/presentation/blocs/caching_bloc/caching_bloc.dart';
 import 'package:fs_bank/features/home/presentation/blocs/sync_bloc/sync_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/app/depndency_injection.dart';
+import '../../../../core/db/attachment_table/attachment_table.dart';
+import '../../../../core/db/attribute_table/set_attribute_table.dart';
+import '../../../../main.dart';
 import '../../../address/presentation/blocs/set_address_bloc/set_address_bloc.dart';
 import '../../../attributes/domain/models/set_attributes_model/set_attribute_model.dart';
 import '../../../attributes/presentation/blocs/set_attribute_bloc/set_attribute_bloc.dart';
@@ -32,10 +37,13 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   // Timer? _timer;
+  late Stream<List<CustomerTable>> streamUsers;
 
   @override
   void initState() {
-    context.read<CachingBloc>().add(const CachingEvent.getCustomersCaching());
+    streamUsers = objectBox.getCustomers();
+
+    // context.read<CachingBloc>().add(const CachingEvent.getCustomersCaching());
     // _timer = Timer.periodic(
     //   const Duration(seconds: 3),
     //   (timer) async {
@@ -171,64 +179,96 @@ class _HomeViewState extends State<HomeView> {
             },
           ),
           SizedBox(height: AppSizeH.s12),
-          BlocConsumer(
-            listener: (context, CachingState state) {
-              state.mapOrNull(
-                success: (value) {
-                  context.read<CachingBloc>().add(CachingEvent.filter(
-                      filterType: context.read<CachingBloc>().filterType));
-                },
-              );
-            },
-            bloc: context.read<CachingBloc>(),
-            builder: (context, CachingState state) {
-              return state.maybeMap(
-                loading: (value) => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                successFilter: (value) {
-                  return value.customersInput.isEmpty
-                      ? const Expanded(child: Center(child: Text("No Data")))
-                      : Expanded(
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AppSizeW.s16),
-                              child: ListView.builder(
-                                itemCount: value.customersInput.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      CustomerTempWidget(
-                                          index: index,
-                                          model: value.customersInput[index]),
-                                      const Divider()
-                                    ],
-                                  );
-                                },
-                              )
-                              // Column(
-                              //   children: value.customersInput.map(
-                              //     (e) {
-                              // return Column(
-                              //   mainAxisSize: MainAxisSize.min,
-                              //   children: [
-                              //     CustomerTempWidget(model: e),
-                              //     const Divider()
-                              //   ],
-                              // );
-                              //     },
-                              //   ).toList(),
-                              // ),
-                              ),
-                        );
-                },
-                orElse: () {
-                  return const Expanded(child: SizedBox());
-                },
-              );
-            },
-          ),
+          StreamBuilder<List<CustomerTable>>(
+              stream: streamUsers,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  final users = snapshot.data!;
+                  return Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: AppSizeW.s16),
+                        child: ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CustomerTempWidget(
+                                  index: index,
+                                  model: users[index],
+                                ),
+                                const Divider()
+                              ],
+                            );
+                          },
+                        )),
+                  );
+                }
+              }),
+
+          // BlocConsumer(
+          //   listener: (context, CachingState state) {
+          //     state.mapOrNull(
+          //       success: (value) {
+          //         context.read<CachingBloc>().add(CachingEvent.filter(
+          //             filterType: context.read<CachingBloc>().filterType));
+          //       },
+          //     );
+          //   },
+          //   bloc: context.read<CachingBloc>(),
+          //   builder: (context, CachingState state) {
+          //     return state.maybeMap(
+          //       loading: (value) => const Center(
+          //         child: CircularProgressIndicator(),
+          //       ),
+          //       successFilter: (value) {
+          //         return value.customersInput.isEmpty
+          //             ? const Expanded(child: Center(child: Text("No Data")))
+          // : Expanded(
+          //     child: Padding(
+          //         padding: EdgeInsets.symmetric(
+          //             horizontal: AppSizeW.s16),
+          //         child: ListView.builder(
+          //           itemCount: value.customersInput.length,
+          //           itemBuilder: (context, index) {
+          // return Column(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     CustomerTempWidget(
+          //         index: index,
+          //         model: value.customersInput[index]),
+          //     const Divider()
+          //   ],
+          // );
+          //           },
+          //         )
+          //         // Column(
+          //         //   children: value.customersInput.map(
+          //         //     (e) {
+          //         // return Column(
+          //         //   mainAxisSize: MainAxisSize.min,
+          //         //   children: [
+          //         //     CustomerTempWidget(model: e),
+          //         //     const Divider()
+          //         //   ],
+          //         // );
+          //         //     },
+          //         //   ).toList(),
+          //         // ),
+          //         ),
+          //   );
+          //       },
+          //       orElse: () {
+          //         return const Expanded(child: SizedBox());
+          //       },
+          //     );
+          //   },
+          // ),
+
           Padding(
             padding: EdgeInsets.symmetric(vertical: AppSizeH.s12),
             child: Column(
@@ -293,7 +333,7 @@ class _HomeViewState extends State<HomeView> {
 }
 
 class CustomerTempWidget extends StatefulWidget {
-  final InputCreateCustomerModel model;
+  final CustomerTable model;
   final int index;
   const CustomerTempWidget({
     super.key,
@@ -307,30 +347,48 @@ class CustomerTempWidget extends StatefulWidget {
 
 class _CustomerTempWidgetState extends State<CustomerTempWidget> {
   late SyncBloc syncBloc;
-  late SetAttributeBloc setAttributeBloc;
-  late SetAddressBloc setAddressBloc;
-
-  InputCreateCustomerModel? temp;
   // Timer? _timer;
   @override
   void initState() {
     syncBloc = instance<SyncBloc>();
-    setAttributeBloc = instance<SetAttributeBloc>();
-    setAddressBloc = instance<SetAddressBloc>();
-    temp = widget.model;
-    // syncBloc.add(SyncEvent.createCustomer(input: widget.model));
-   (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
-              ? null
-              : syncBloc.add(SyncEvent.createCustomer(input: widget.model));
+    // temp = widget.model;
+    // // syncBloc.add(SyncEvent.createCustomer(input: widget.model));
+    // (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
+    //     ? null
+    //     :
+    if (!widget.model.createdSuccessfully) {
+      syncBloc.add(SyncEvent.createCustomer(
+          input: CreateCustomerModel(
+        firstName: InputModel(
+            ar: widget.model.firstNameAr, en: widget.model.firstNameEn),
+        lastName: InputModel(
+            ar: widget.model.lastNameAr, en: widget.model.lastNameEn),
+        fatherName: InputModel(
+            ar: widget.model.fatherNameAr, en: widget.model.fatherNameEn),
+        motherName: InputModel(
+            ar: widget.model.motherNameAr, en: widget.model.motherNameEn),
+        dateOfBirth: widget.model.dateOfBirth,
+        placeOfBirth: widget.model.placeOfBirth,
+        email: widget.model.email,
+        createdAt: widget.model.createdAt,
+        mobileNumber: widget.model.mobileNumber,
+        phoneNumber: widget.model.phoneNumber,
+        nationality: "",
+        status: widget.model.status,
+        templateId: widget.model.templateId,
+        gender: widget.model.gender,
+        title: widget.model.title,
+      )));
+    }
 
     // _timer = Timer.periodic(
     //   Duration(seconds: ((widget.index + 1) * 10)),
     //   (timer) async {
-        // if (await instance<NetworkInfo>().isConnected) {
-        //   (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
-        //       ? null
-        //       : syncBloc.add(SyncEvent.createCustomer(input: widget.model));
-        // }
+    // if (await instance<NetworkInfo>().isConnected) {
+    //   (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
+    //       ? null
+    //       : syncBloc.add(SyncEvent.createCustomer(input: widget.model));
+    // }
     //   },
     // );
     super.initState();
@@ -348,19 +406,21 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
       listener: (context, SyncState state) {
         state.mapOrNull(
           error: (value) {
-            temp = temp?.copyWith(hasError: true);
+            objectBox.updateCustomer(widget.model.id, null, false);
           },
           loaded: (value) async {
-            temp = temp?.copyWith(
-                hasSuccess: true, customerId: value.customer.data.id);
-            context.read<CachingBloc>().replaceCustomerInfo(customer: temp!);
-            setAttributeBloc.add(SetAttributeEvent.setAttribute(
-                setAttributeModel: SetAttributeModel(
-                    customerId: value.customer.data.id,
-                    attributes: widget.model.attributes)));
-            setAddressBloc.add(SetAddressEvent.setAddress(
-                cusotmerId: value.customer.data.id,
-                model: widget.model.address));
+            objectBox.updateCustomer(
+                widget.model.id, value.customer.data.id, true);
+            // temp = temp?.copyWith(
+            //     hasSuccess: true, customerId: value.customer.data.id);
+            // context.read<CachingBloc>().replaceCustomerInfo(customer: temp!);
+            // setAttributeBloc.add(SetAttributeEvent.setAttribute(
+            //     setAttributeModel: SetAttributeModel(
+            //         customerId: value.customer.data.id,
+            //         attributes: widget.model.attributes)));
+            // setAddressBloc.add(SetAddressEvent.setAddress(
+            //     cusotmerId: value.customer.data.id,
+            //     model: widget.model.address));
           },
         );
       },
@@ -374,7 +434,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                 Expanded(
                   child: Row(
                     children: [
-                      Text(widget.model.firstName.en),
+                      Text(widget.model.firstNameAr),
                       SizedBox(width: AppSizeW.s6),
                       Text(
                         value.message,
@@ -389,9 +449,9 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                 SizedBox(width: AppSizeW.s6),
                 InkWell(
                     onTap: () {
-                      temp = temp?.copyWith(hasError: false);
-                      syncBloc
-                          .add(SyncEvent.createCustomer(input: widget.model));
+                      // temp = temp?.copyWith(hasError: false);
+                      // syncBloc
+                      //     .add(SyncEvent.createCustomer(input: widget.model));
                     },
                     child: Icon(Icons.refresh, color: ColorManager.persimmon)),
               ],
@@ -403,7 +463,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                 Row(
                   children: [
                     Text(
-                        "${widget.model.firstName.en} ${widget.model.lastName.en}",
+                        "${widget.model.firstNameAr} ${widget.model.lastNameAr}",
                         style: Theme.of(context).textTheme.labelSmall),
                   ],
                 ),
@@ -433,7 +493,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                 Row(
                   children: [
                     Text(
-                        "${widget.model.firstName.en} ${widget.model.lastName.en}",
+                        "${widget.model.firstNameAr} ${widget.model.lastNameAr}",
                         style: Theme.of(context).textTheme.labelSmall),
                   ],
                 ),
@@ -452,37 +512,25 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                       ],
                     ),
                     SizedBox(height: AppSizeH.s3),
-                    BlocProvider.value(
-                      value: setAttributeBloc,
-                      child: AttributesWidget(
-                          customerId: value.customer.data.id,
-                          attributs: widget.model.attributes),
-                    ),
+                    AttributesWidget(customerTable: widget.model),
                     SizedBox(height: AppSizeH.s3),
-                    BlocProvider.value(
-                      value: setAddressBloc,
-                      child: AddressWidget(
-                          customerId: value.customer.data.id,
-                          model: widget.model.address),
-                    ),
+                    AddressWidget(model: widget.model),
                     SizedBox(height: AppSizeH.s3),
-                    AttachmentsWidget(
-                        customerId: value.customer.data.id,
-                        models: widget.model.attachments)
+                    AttachmentsWidget(model: widget.model)
                   ],
                 )
               ],
             );
           },
           orElse: () {
-            return temp?.hasSuccess ?? false
+            return widget.model.createdSuccessfully
                 ? Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                              "${widget.model.firstName.en} ${widget.model.lastName.en}",
+                              "${widget.model.firstNameAr} ${widget.model.lastNameAr}",
                               style: Theme.of(context).textTheme.labelSmall),
                           //todo!
                           // ((temp?.hasErrorSetAddress ?? false) ||
@@ -542,24 +590,13 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                             ],
                           ),
                           SizedBox(height: AppSizeH.s3),
-                          BlocProvider.value(
-                            value: setAttributeBloc,
-                            child: AttributesWidget(
-                              customerId: temp?.customerId ?? 0,
-                              attributs: widget.model.attributes,
-                            ),
+                          AttributesWidget(
+                            customerTable: widget.model,
                           ),
                           SizedBox(height: AppSizeH.s3),
-                          BlocProvider.value(
-                            value: setAddressBloc,
-                            child: AddressWidget(
-                                customerId: temp?.customerId ?? 0,
-                                model: widget.model.address),
-                          ),
+                          AddressWidget(model: widget.model),
                           SizedBox(height: AppSizeH.s3),
-                          AttachmentsWidget(
-                              customerId: temp?.customerId ?? 0,
-                              models: widget.model.attachments)
+                          AttachmentsWidget(model: widget.model)
                         ],
                       )
                     ],
@@ -569,7 +606,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
                       Row(
                         children: [
                           Text(
-                              "${widget.model.firstName.en} ${widget.model.lastName.en}",
+                              "${widget.model.firstNameAr} ${widget.model.lastNameAr}",
                               style: Theme.of(context).textTheme.labelSmall),
                         ],
                       ),
@@ -602,12 +639,10 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
 }
 
 class AttributesWidget extends StatefulWidget {
-  final int customerId;
-  final List<AttributeModel> attributs;
+  final CustomerTable customerTable;
   const AttributesWidget({
     super.key,
-    required this.customerId,
-    required this.attributs,
+    required this.customerTable,
   });
 
   @override
@@ -615,31 +650,30 @@ class AttributesWidget extends StatefulWidget {
 }
 
 class _AttributesAddretState extends State<AttributesWidget> {
-  InputCreateCustomerModel? temp;
-  // int index = 0;
+  late SetAttributeBloc setAttributeBloc;
+
   @override
   void initState() {
-    // index = context.read<CachingBloc>().cached.indexWhere(
-    //       (element) => element.customerId == widget.customerId,
-    //     );
-    temp = context.read<CachingBloc>().cached.firstWhere(
-          (element) => element.customerId == widget.customerId,
-        );
-    if (temp != InputCreateCustomerModel()) {
-      (temp?.hasSuccessSetAttributes ?? false) ||
-              (temp?.hasErrorSetAttributes ?? false)
-          ? null
-          : context.read<SetAttributeBloc>().add(SetAttributeEvent.setAttribute(
-              setAttributeModel: SetAttributeModel(
-                  customerId: widget.customerId,
-                  attributes: widget.attributs)));
-    }
+    setAttributeBloc = instance<SetAttributeBloc>();
+
+    (widget.customerTable.attributesSuccessfully)
+        ? null
+        : setAttributeBloc.add(SetAttributeEvent.setAttribute(
+            setAttributeModel: SetAttributeModel(
+                customerId: widget.customerTable.customerId ?? 0,
+                attributes: widget.customerTable.setAttributeTable.map(
+                  (element) {
+                    return AttributeModel(
+                        attributeId: element.attributeId, value: element.value);
+                  },
+                ).toList())));
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return temp?.hasSuccessSetAttributes ?? false
+    return widget.customerTable.attributesSuccessfully
         ? Row(
             children: [
               Text("Set attributes",
@@ -652,112 +686,94 @@ class _AttributesAddretState extends State<AttributesWidget> {
               )
             ],
           )
-        : temp?.hasErrorSetAttributes ?? false
-            ? Row(
-                children: [
-                  Text("Set attributes",
-                      style: Theme.of(context).textTheme.headlineLarge),
-                  SizedBox(width: AppSizeW.s6),
-                  Icon(
-                    Icons.close,
-                    size: AppSizeSp.s14,
-                    color: ColorManager.persimmon,
-                  )
-                ],
-              )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BlocConsumer(
-                    listener: (context, SetAttributeState state) {
-                      state.mapOrNull(
-                        success: (value) {
-                          temp = context.read<CachingBloc>().cached.firstWhere(
-                                (element) =>
-                                    element.customerId == widget.customerId,
-                              );
-                          temp = temp?.copyWith(hasSuccessSetAttributes: true);
-                          context
-                              .read<CachingBloc>()
-                              .replaceCustomerInfo(customer: temp!);
-                        },
-                        error: (value) {
-                          temp = context.read<CachingBloc>().cached.firstWhere(
-                                (element) =>
-                                    element.customerId == widget.customerId,
-                              );
-                          temp = temp?.copyWith(hasErrorSetAttributes: true);
-                          context
-                              .read<CachingBloc>()
-                              .replaceCustomerInfo(customer: temp!);
-                        },
+        :
+        // temp?.hasErrorSetAttributes ?? false
+        //     ? Row(
+        //         children: [
+        //           Text("Set attributes",
+        //               style: Theme.of(context).textTheme.headlineLarge),
+        //           SizedBox(width: AppSizeW.s6),
+        //           Icon(
+        //             Icons.close,
+        //             size: AppSizeSp.s14,
+        //             color: ColorManager.persimmon,
+        //           )
+        //         ],
+        //       )
+        //     :
+        Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BlocConsumer(
+                listener: (context, SetAttributeState state) {
+                  state.mapOrNull(
+                    success: (value) {
+                      objectBox.updateCustomerAttributes(
+                          widget.customerTable.id, true);
+                    },
+                    error: (value) {
+                      objectBox.updateCustomerAttributes(
+                          widget.customerTable.id, false);
+                    },
+                  );
+                },
+                bloc: setAttributeBloc,
+                builder: (context, SetAttributeState state) {
+                  return state.maybeMap(
+                    loading: (value) {
+                      return Row(
+                        children: [
+                          Text("Set attributes",
+                              style: Theme.of(context).textTheme.headlineLarge),
+                          SizedBox(width: AppSizeW.s6),
+                          Icon(
+                            Icons.timer_outlined,
+                            size: AppSizeSp.s14,
+                            color: ColorManager.primary,
+                          )
+                        ],
                       );
                     },
-                    bloc: context.read<SetAttributeBloc>(),
-                    builder: (context, SetAttributeState state) {
-                      return state.maybeMap(
-                        loading: (value) {
-                          return Row(
-                            children: [
-                              Text("Set attributes",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              SizedBox(width: AppSizeW.s6),
-                              Icon(
-                                Icons.timer_outlined,
-                                size: AppSizeSp.s14,
-                                color: ColorManager.primary,
-                              )
-                            ],
-                          );
-                        },
-                        success: (value) {
-                          return Row(
-                            children: [
-                              Text("Set attributes",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              SizedBox(width: AppSizeW.s6),
-                              Icon(
-                                Icons.check,
-                                size: AppSizeSp.s14,
-                                color: ColorManager.emerald,
-                              )
-                            ],
-                          );
-                        },
-                        orElse: () {
-                          return Row(
-                            children: [
-                              Text("Set attributes",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              SizedBox(width: AppSizeW.s6),
-                              Icon(
-                                Icons.close,
-                                size: AppSizeSp.s14,
-                                color: ColorManager.persimmon,
-                              )
-                            ],
-                          );
-                        },
+                    success: (value) {
+                      return Row(
+                        children: [
+                          Text("Set attributes",
+                              style: Theme.of(context).textTheme.headlineLarge),
+                          SizedBox(width: AppSizeW.s6),
+                          Icon(
+                            Icons.check,
+                            size: AppSizeSp.s14,
+                            color: ColorManager.emerald,
+                          )
+                        ],
                       );
                     },
-                  ),
-                ],
-              );
+                    orElse: () {
+                      return Row(
+                        children: [
+                          Text("Set attributes",
+                              style: Theme.of(context).textTheme.headlineLarge),
+                          SizedBox(width: AppSizeW.s6),
+                          Icon(
+                            Icons.close,
+                            size: AppSizeSp.s14,
+                            color: ColorManager.persimmon,
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          );
   }
 }
 
 class AddressWidget extends StatefulWidget {
-  final int customerId;
-  final SetAddressModel model;
+  final CustomerTable model;
   const AddressWidget({
     super.key,
-    required this.customerId,
     required this.model,
   });
 
@@ -766,26 +782,30 @@ class AddressWidget extends StatefulWidget {
 }
 
 class _AddressWidgetState extends State<AddressWidget> {
-  InputCreateCustomerModel? temp;
+  late SetAddressBloc setAddressBloc;
 
   @override
   void initState() {
-    temp = context.read<CachingBloc>().cached.firstWhere(
-          (element) => element.customerId == widget.customerId,
-        );
-    if (temp != InputCreateCustomerModel()) {
-      (temp?.hasSuccessSetAddress ?? false) ||
-              (temp?.hasErrorSetAddress ?? false)
-          ? null
-          : context.read<SetAddressBloc>().add(SetAddressEvent.setAddress(
-              cusotmerId: widget.customerId, model: widget.model));
-    }
+    setAddressBloc = instance<SetAddressBloc>();
+    (widget.model.addressSuccessfully)
+        ? null
+        : setAddressBloc.add(SetAddressEvent.setAddress(
+            cusotmerId: widget.model.customerId ?? 0,
+            model: SetAddressModel(
+                countryId: widget.model.addressTable.target!.countryId,
+                addressType: widget.model.addressTable.target!.addressType,
+                area: widget.model.addressTable.target!.area,
+                details: widget.model.addressTable.target!.details,
+                isDefault: widget.model.addressTable.target!.isDefault,
+                phoneNumber: widget.model.addressTable.target!.phoneNumber,
+                stateId: widget.model.addressTable.target!.stateId,
+                street: widget.model.addressTable.target!.street)));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return temp?.hasSuccessSetAddress ?? false
+    return widget.model.addressSuccessfully
         ? Row(
             children: [
               Text("Set Address",
@@ -798,114 +818,93 @@ class _AddressWidgetState extends State<AddressWidget> {
               )
             ],
           )
-        : temp?.hasErrorSetAddress ?? false
-            ? Row(
-                children: [
-                  Text("Set Address",
-                      style: Theme.of(context).textTheme.headlineLarge),
-                  SizedBox(width: AppSizeW.s6),
-                  Icon(
-                    Icons.close,
-                    size: AppSizeSp.s14,
-                    color: ColorManager.persimmon,
-                  )
-                ],
-              )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BlocConsumer(
-                    listener: (context, SetAddressState state) {
-                      state.mapOrNull(
-                        success: (value) {
-                          temp = context.read<CachingBloc>().cached.firstWhere(
-                                (element) =>
-                                    element.customerId == widget.customerId,
-                              );
-
-                          temp = temp?.copyWith(hasSuccessSetAddress: true);
-                          context
-                              .read<CachingBloc>()
-                              .replaceCustomerInfo(customer: temp!);
-                        },
-                        error: (value) {
-                          temp = context.read<CachingBloc>().cached.firstWhere(
-                                (element) =>
-                                    element.customerId == widget.customerId,
-                              );
-                          temp = temp?.copyWith(hasErrorSetAddress: true);
-                          context
-                              .read<CachingBloc>()
-                              .replaceCustomerInfo(customer: temp!);
-                        },
+        :
+        // temp?.hasErrorSetAddress ?? false
+        //     ? Row(
+        //         children: [
+        //           Text("Set Address",
+        //               style: Theme.of(context).textTheme.headlineLarge),
+        //           SizedBox(width: AppSizeW.s6),
+        //           Icon(
+        //             Icons.close,
+        //             size: AppSizeSp.s14,
+        //             color: ColorManager.persimmon,
+        //           )
+        //         ],
+        //       )
+        //     :
+        Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BlocConsumer(
+                listener: (context, SetAddressState state) {
+                  state.mapOrNull(
+                    success: (value) {
+                      objectBox.updateCustomerAddress(widget.model.id, true);
+                    },
+                    error: (value) {
+                      objectBox.updateCustomerAddress(widget.model.id, false);
+                    },
+                  );
+                },
+                bloc: setAddressBloc,
+                builder: (context, SetAddressState state) {
+                  return state.maybeMap(
+                    loading: (value) {
+                      return Row(
+                        children: [
+                          Text("Set Address",
+                              style: Theme.of(context).textTheme.headlineLarge),
+                          SizedBox(width: AppSizeW.s6),
+                          Icon(
+                            Icons.timer_outlined,
+                            size: AppSizeSp.s14,
+                            color: ColorManager.primary,
+                          )
+                        ],
                       );
                     },
-                    bloc: context.read<SetAddressBloc>(),
-                    builder: (context, SetAddressState state) {
-                      return state.maybeMap(
-                        loading: (value) {
-                          return Row(
-                            children: [
-                              Text("Set Address",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              SizedBox(width: AppSizeW.s6),
-                              Icon(
-                                Icons.timer_outlined,
-                                size: AppSizeSp.s14,
-                                color: ColorManager.primary,
-                              )
-                            ],
-                          );
-                        },
-                        success: (value) {
-                          return Row(
-                            children: [
-                              Text("Set Address",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              SizedBox(width: AppSizeW.s6),
-                              Icon(
-                                Icons.check,
-                                size: AppSizeSp.s14,
-                                color: ColorManager.emerald,
-                              )
-                            ],
-                          );
-                        },
-                        orElse: () {
-                          return Row(
-                            children: [
-                              Text("Set Address",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              SizedBox(width: AppSizeW.s6),
-                              Icon(
-                                Icons.close,
-                                size: AppSizeSp.s14,
-                                color: ColorManager.persimmon,
-                              )
-                            ],
-                          );
-                        },
+                    success: (value) {
+                      return Row(
+                        children: [
+                          Text("Set Address",
+                              style: Theme.of(context).textTheme.headlineLarge),
+                          SizedBox(width: AppSizeW.s6),
+                          Icon(
+                            Icons.check,
+                            size: AppSizeSp.s14,
+                            color: ColorManager.emerald,
+                          )
+                        ],
                       );
                     },
-                  ),
-                ],
-              );
+                    orElse: () {
+                      return Row(
+                        children: [
+                          Text("Set Address",
+                              style: Theme.of(context).textTheme.headlineLarge),
+                          SizedBox(width: AppSizeW.s6),
+                          Icon(
+                            Icons.close,
+                            size: AppSizeSp.s14,
+                            color: ColorManager.persimmon,
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          );
   }
 }
 
 class AttachmentsWidget extends StatefulWidget {
-  final int customerId;
-  final List<SetAttachmentModel> models;
+  final CustomerTable model;
   const AttachmentsWidget({
     super.key,
-    required this.customerId,
-    required this.models,
+    required this.model,
   });
 
   @override
@@ -938,9 +937,9 @@ class _AttachmentsWidgetState extends State<AttachmentsWidget> {
             padding: EdgeInsetsDirectional.only(
                 start: AppSizeW.s8, end: AppSizeW.s8, bottom: AppSizeW.s8),
             child: Column(
-              children: widget.models.map((e) {
+              children: widget.model.setAttachmentTable.map((e) {
                 return AttachmentWidget(
-                  customerId: widget.customerId,
+                  customerId: widget.model.customerId ?? 0,
                   model: e,
                 );
               }).toList(),
@@ -953,7 +952,7 @@ class _AttachmentsWidgetState extends State<AttachmentsWidget> {
 }
 
 class AttachmentWidget extends StatefulWidget {
-  final SetAttachmentModel model;
+  final SetAttachmentDataTable model;
   final int customerId;
   const AttachmentWidget({
     super.key,
@@ -967,30 +966,17 @@ class AttachmentWidget extends StatefulWidget {
 
 class _AttachmentWidgetState extends State<AttachmentWidget> {
   late SetAttachmentBloc setAttachmentBloc;
-  InputCreateCustomerModel? temp;
   @override
   void initState() {
-    temp = context.read<CachingBloc>().cached.firstWhere(
-          (element) => element.customerId == widget.customerId,
-        );
     setAttachmentBloc = instance<SetAttachmentBloc>();
-    if (!(temp?.attachments
-            .firstWhere(
-              (element) => element.attributeId == widget.model.attributeId,
-              orElse: () => SetAttachmentModel(),
-            )
-            .isUploaded ??
-        false)) {
-      if (!(temp?.attachments
-              .firstWhere(
-                (element) => element.attributeId == widget.model.attributeId,
-                orElse: () => SetAttachmentModel(),
-              )
-              .hasError ??
-          false)) {
-        setAttachmentBloc.add(SetAttachmentEvent.setAttachment(
-            customerId: widget.customerId, model: widget.model));
-      }
+    if (!widget.model.isUploaded) {
+      setAttachmentBloc.add(SetAttachmentEvent.setAttachment(
+          customerId: widget.customerId,
+          model: SetAttachmentModel(
+            name: widget.model.name,
+            file: widget.model.file,
+            attributeId: widget.model.attributeId,
+          )));
     }
 
     super.initState();
@@ -998,13 +984,7 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return temp?.attachments
-                .firstWhere(
-                  (element) => element.attributeId == widget.model.attributeId,
-                  orElse: () => SetAttachmentModel(),
-                )
-                .isUploaded ??
-            false
+    return widget.model.isUploaded
         ? Row(children: [
             Text(widget.model.name,
                 style: Theme.of(context).textTheme.headlineLarge),
@@ -1015,138 +995,105 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
               color: ColorManager.emerald,
             )
           ])
-        : temp?.attachments
-                    .firstWhere(
-                      (element) =>
-                          element.attributeId == widget.model.attributeId,
-                      orElse: () => SetAttachmentModel(),
-                    )
-                    .hasError ??
-                false
-            ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(widget.model.name,
-                        style: Theme.of(context).textTheme.headlineLarge),
-                    SizedBox(width: AppSizeW.s4),
-                    Icon(
-                      Icons.close,
-                      size: AppSizeSp.s16,
-                      color: ColorManager.persimmon,
-                    ),
-                  ],
-                ),
-                // SizedBox(width: AppSizeW.s12),
-                // IconButton(
-                //     onPressed: () {
-                //       temp = context.read<CachingBloc>().cached.firstWhere(
-                //             (element) =>
-                //                 element.customerId == widget.customerId,
-                //           );
-                //       temp = temp?.copyWith(
-                //           attachments: temp?.attachments.map(
-                //                 (e) {
-                //                   if (e.attributeId ==
-                //                       widget.model.attributeId) {
-                //                     e = e.copyWith(
-                //                         isUploaded: false, hasError: false);
-                //                   }
-                //                   return e;
-                //                 },
-                //               ).toList() ??
-                //               []);
-                //       context
-                //           .read<CachingBloc>()
-                //           .replaceCustomerInfo(customer: temp!);
-                //       setAttachmentBloc.add(SetAttachmentEvent.setAttachment(
-                //           customerId: widget.customerId, model: widget.model));
-                //     },
-                //     icon: Icon(
-                //       Icons.sync,
-                //       size: AppSizeSp.s16,
-                //       color: ColorManager.primary,
-                //     )),
-              ])
-            : Row(
-                children: [
-                  Text(widget.model.name,
-                      style: Theme.of(context).textTheme.headlineLarge),
-                  SizedBox(width: AppSizeW.s4),
-                  BlocConsumer(
-                    listener: (context, SetAttachmentState state) {
-                      state.mapOrNull(
-                        success: (value) {
-                          temp = context.read<CachingBloc>().cached.firstWhere(
-                                (element) =>
-                                    element.customerId == widget.customerId,
-                              );
-                          temp = temp?.copyWith(
-                              attachments: temp?.attachments.map(
-                                    (e) {
-                                      if (e.attributeId ==
-                                          widget.model.attributeId) {
-                                        e = e.copyWith(isUploaded: true);
-                                      }
-                                      return e;
-                                    },
-                                  ).toList() ??
-                                  []);
-                          context
-                              .read<CachingBloc>()
-                              .replaceCustomerInfo(customer: temp!);
-                        },
-                        error: (value) {
-                          temp = context.read<CachingBloc>().cached.firstWhere(
-                                (element) =>
-                                    element.customerId == widget.customerId,
-                              );
-                          temp = temp?.copyWith(
-                              attachments: temp?.attachments.map(
-                                    (e) {
-                                      if (e.attributeId ==
-                                          widget.model.attributeId) {
-                                        e = e.copyWith(
-                                            isUploaded: false, hasError: true);
-                                      }
-                                      return e;
-                                    },
-                                  ).toList() ??
-                                  []);
-                          context
-                              .read<CachingBloc>()
-                              .replaceCustomerInfo(customer: temp!);
-                        },
+        :
+        //  temp?.attachments
+        //             .firstWhere(
+        //               (element) =>
+        //                   element.attributeId == widget.model.attributeId,
+        //               orElse: () => SetAttachmentModel(),
+        //             )
+        //             .hasError ??
+        //         false
+        //     ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        //         Row(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: [
+        //             Text(widget.model.name,
+        //                 style: Theme.of(context).textTheme.headlineLarge),
+        //             SizedBox(width: AppSizeW.s4),
+        //             Icon(
+        //               Icons.close,
+        //               size: AppSizeSp.s16,
+        //               color: ColorManager.persimmon,
+        //             ),
+        //           ],
+        //         ),
+        //         // SizedBox(width: AppSizeW.s12),
+        //         // IconButton(
+        //         //     onPressed: () {
+        //         //       temp = context.read<CachingBloc>().cached.firstWhere(
+        //         //             (element) =>
+        //         //                 element.customerId == widget.customerId,
+        //         //           );
+        //         //       temp = temp?.copyWith(
+        //         //           attachments: temp?.attachments.map(
+        //         //                 (e) {
+        //         //                   if (e.attributeId ==
+        //         //                       widget.model.attributeId) {
+        //         //                     e = e.copyWith(
+        //         //                         isUploaded: false, hasError: false);
+        //         //                   }
+        //         //                   return e;
+        //         //                 },
+        //         //               ).toList() ??
+        //         //               []);
+        //         //       context
+        //         //           .read<CachingBloc>()
+        //         //           .replaceCustomerInfo(customer: temp!);
+        //         //       setAttachmentBloc.add(SetAttachmentEvent.setAttachment(
+        //         //           customerId: widget.customerId, model: widget.model));
+        //         //     },
+        //         //     icon: Icon(
+        //         //       Icons.sync,
+        //         //       size: AppSizeSp.s16,
+        //         //       color: ColorManager.primary,
+        //         //     )),
+        //       ])
+        //     :
+        Row(
+            children: [
+              Text(widget.model.name,
+                  style: Theme.of(context).textTheme.headlineLarge),
+              SizedBox(width: AppSizeW.s4),
+              BlocConsumer(
+                listener: (context, SetAttachmentState state) {
+                  state.mapOrNull(
+                    success: (value) {
+                      objectBox.updateAttachmentStatus(widget.model.id, true);
+                    },
+                    error: (value) {
+                      objectBox.updateAttachmentStatus(widget.model.id, false);
+                    },
+                  );
+                },
+                bloc: setAttachmentBloc,
+                builder: (context, SetAttachmentState state) {
+                  return state.maybeMap(
+                    loading: (value) {
+                      return Icon(
+                        Icons.timer_outlined,
+                        size: AppSizeSp.s16,
+                        color: ColorManager.primary,
                       );
                     },
-                    bloc: setAttachmentBloc,
-                    builder: (context, SetAttachmentState state) {
-                      return state.maybeMap(
-                        loading: (value) {
-                          return Icon(
-                            Icons.timer_outlined,
-                            size: AppSizeSp.s16,
-                            color: ColorManager.primary,
-                          );
-                        },
-                        success: (value) {
-                          return Icon(
-                            Icons.check,
-                            size: AppSizeSp.s16,
-                            color: ColorManager.emerald,
-                          );
-                        },
-                        orElse: () {
-                          return Icon(
-                            Icons.close,
-                            size: AppSizeSp.s16,
-                            color: ColorManager.persimmon,
-                          );
-                        },
+                    success: (value) {
+                      return Icon(
+                        Icons.check,
+                        size: AppSizeSp.s16,
+                        color: ColorManager.emerald,
                       );
                     },
-                  )
-                ],
-              );
+                    orElse: () {
+                      return Icon(
+                        Icons.close,
+                        size: AppSizeSp.s16,
+                        color: ColorManager.persimmon,
+                      );
+                    },
+                  );
+                },
+              )
+            ],
+          );
   }
 }

@@ -7,6 +7,7 @@ import 'package:fs_bank/core/cache/app_preferences.dart';
 import 'package:fs_bank/features/address/domain/models/country_model/country_model.dart';
 import 'package:fs_bank/features/address/domain/usecases/address_usecases.dart';
 import 'package:fs_bank/features/home/domain/usecases/home_usecases.dart';
+import 'package:fs_bank/main.dart';
 
 part 'static_event.dart';
 part 'static_state.dart';
@@ -38,6 +39,7 @@ class StaticBloc extends Bloc<StaticEvent, StaticState> {
               templates.clear();
               templates.addAll(success.data);
               await appPreferences.setTemplates(templates: success.data);
+
               emit(StaticState.loaded(templates: success));
             },
             (error) {
@@ -56,6 +58,8 @@ class StaticBloc extends Bloc<StaticEvent, StaticState> {
                 countries.clear();
                 countries.addAll(success.data);
                 await appPreferences.setCountries(countries: success.data);
+                await objectBox.addCountries(success.data);
+
                 emit(StaticState.loaded(countries: success));
               },
               (error) {
@@ -75,6 +79,7 @@ class StaticBloc extends Bloc<StaticEvent, StaticState> {
                 states.clear();
                 states.addAll(success.data);
                 await appPreferences.setStates(states: success.data);
+                await objectBox.addStates(success.data);
                 emit(StaticState.loaded(states: success));
               },
               (error) {

@@ -5,6 +5,7 @@ import 'package:fs_bank/features/address/presentation/views/address_view.dart';
 import 'package:fs_bank/features/attributes/presentation/views/attachments_view.dart';
 import 'package:fs_bank/features/customer/presentation/views/create_customer_view.dart';
 import 'package:fs_bank/features/home/presentation/views/home_view.dart';
+import 'package:fs_bank/features/home/presentation/views/home_view2.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/attributes/presentation/views/attributes_view.dart';
@@ -46,6 +47,7 @@ class AppRouter {
             name: RoutesNames.homeRoute,
             path: RoutesPaths.homeRoute,
             builder: (context, state) => const HomeView(),
+            // builder: (context, state) => const HomeView2(),
             routes: [
               GoRoute(
                   name: RoutesNames.createCustomerRoute,

@@ -15,6 +15,9 @@ import 'package:fs_bank/features/home/presentation/blocs/static_bloc/static_bloc
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/app/depndency_injection.dart';
+import '../../../../core/bases/models/static_model/static_model.dart';
+import '../../../../core/db/attribute_table/attribute_table.dart';
+import '../../../../main.dart';
 import '../blocs/input_customer_cubit/input_customer_cubit.dart';
 import '../widgets/drop_down_static_widget.dart';
 import '../widgets/drop_down_string_widget.dart';
@@ -33,6 +36,8 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
   final PageController _pageController = PageController();
   final PageController _pageControllerRoot = PageController();
   var titleList = [TitleType.Mr.name, TitleType.Ms.name];
+  late Stream<List<AttributeTable>> streamUsers;
+
   late InputCustomerCubit inputCustomerCubit;
   // late CustomerBloc customerBloc;
   bool isBack = false;
@@ -44,6 +49,8 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
     // customerBloc = instance<CustomerBloc>();
     inputCustomerCubit = instance<InputCustomerCubit>();
     inputCustomerCubit.setTitle(titleList.first);
+    streamUsers = objectBox.getAttributeTable();
+
     super.initState();
   }
 
@@ -510,26 +517,64 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                     ],
                                   ),
                                   SizedBox(height: AppSizeH.s7),
-                                  BlocBuilder(
-                                    bloc: context.read<StaticBloc>(),
-                                    builder: (context, state) {
-                                      return DropDownStaticWidget(
-                                        validator: (value) {
-                                          if (value == null) {
-                                            return 'Please select national.';
-                                          }
-                                          return null;
-                                        },
-                                        items: context
-                                            .read<StaticBloc>()
-                                            .templates,
-                                        label: "National",
-                                        onChanged: (value) {
-                                          inputCustomerCubit.setTemplate(value);
-                                        },
-                                      );
+                                  StreamBuilder<List<AttributeTable>>(
+                                    stream: streamUsers,
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return DropDownStaticWidget(
+                                          validator: (value) {
+                                            if (value == null) {
+                                              return 'Please select national.';
+                                            }
+                                            return null;
+                                          },
+                                          items: const [],
+                                          label: "National",
+                                        );
+                                      } else {
+                                        return DropDownStaticWidget(
+                                          validator: (value) {
+                                            if (value == null) {
+                                              return 'Please select national.';
+                                            }
+                                            return null;
+                                          },
+                                          items: snapshot.data!.map(
+                                            (e) {
+                                              return StaticModel(
+                                                  id: e.templateId,
+                                                  name: e.name);
+                                            },
+                                          ).toList(),
+                                          label: "National",
+                                          onChanged: (value) {
+                                            inputCustomerCubit
+                                                .setTemplate(value);
+                                          },
+                                        );
+                                      }
                                     },
                                   ),
+                                  // BlocBuilder(
+                                  //   bloc: context.read<StaticBloc>(),
+                                  //   builder: (context, state) {
+                                  // return DropDownStaticWidget(
+                                  //   validator: (value) {
+                                  //     if (value == null) {
+                                  //       return 'Please select national.';
+                                  //     }
+                                  //     return null;
+                                  //   },
+                                  //   items: context
+                                  //       .read<StaticBloc>()
+                                  //       .templates,
+                                  //   label: "National",
+                                  //   onChanged: (value) {
+                                  //     inputCustomerCubit.setTemplate(value);
+                                  //   },
+                                  // );
+                                  //   },
+                                  // ),
                                 ],
                               ),
                             ],
@@ -585,6 +630,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
                                     ?.validate() ??
                                 false) {
                               // _nextPage();
+
                               inputCustomerCubit.setFirstName(
                                   inputCustomerCubit.firstNameAr.text,
                                   inputCustomerCubit.firstNameEn.text);

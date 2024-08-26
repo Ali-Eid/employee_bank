@@ -5,6 +5,7 @@ import 'package:fs_bank/features/customer/domain/models/input_create_customer_mo
 import 'package:fs_bank/features/customer/domain/usecases/customer_usecases.dart';
 
 import '../../../domain/models/customer_model/customer_model.dart';
+import '../../../domain/models/input_create_customer_model/create_customer_model/create_customer_model.dart';
 
 part 'customer_event.dart';
 part 'customer_state.dart';

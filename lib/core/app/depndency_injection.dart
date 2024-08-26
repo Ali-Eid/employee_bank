@@ -20,7 +20,10 @@ import 'package:fs_bank/features/home/domain/repository/home_repository.dart';
 import 'package:fs_bank/features/home/domain/usecases/home_usecases.dart';
 import 'package:fs_bank/features/home/presentation/blocs/static_bloc/static_bloc.dart';
 import 'package:fs_bank/features/home/presentation/blocs/sync_bloc/sync_bloc.dart';
+import 'package:fs_bank/objectbox.g.dart';
 import 'package:get_it/get_it.dart';
+import 'package:objectbox/objectbox.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 

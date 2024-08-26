@@ -36,6 +36,9 @@ dependencies:
   file_picker: 
   path_provider: ^2.1.4
   animate_do: ^3.3.4
+  objectbox: ^4.0.2
+  objectbox_flutter_libs: ^4.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -45,6 +48,7 @@ dev_dependencies:
   freezed: 
   json_serializable: ^6.8.0
   retrofit_generator: ^8.1.0
+  objectbox_generator: ^4.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

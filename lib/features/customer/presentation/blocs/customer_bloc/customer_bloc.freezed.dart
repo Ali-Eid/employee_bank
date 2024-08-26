@@ -16,20 +16,20 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CustomerEvent {
-  InputCreateCustomerModel get input => throw _privateConstructorUsedError;
+  CreateCustomerModel get input => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(InputCreateCustomerModel input) createCustomer,
+    required TResult Function(CreateCustomerModel input) createCustomer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(InputCreateCustomerModel input)? createCustomer,
+    TResult? Function(CreateCustomerModel input)? createCustomer,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(InputCreateCustomerModel input)? createCustomer,
+    TResult Function(CreateCustomerModel input)? createCustomer,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -61,9 +61,9 @@ abstract class $CustomerEventCopyWith<$Res> {
           CustomerEvent value, $Res Function(CustomerEvent) then) =
       _$CustomerEventCopyWithImpl<$Res, CustomerEvent>;
   @useResult
-  $Res call({InputCreateCustomerModel input});
+  $Res call({CreateCustomerModel input});
 
-  $InputCreateCustomerModelCopyWith<$Res> get input;
+  $CreateCustomerModelCopyWith<$Res> get input;
 }
 
 /// @nodoc
@@ -85,14 +85,14 @@ class _$CustomerEventCopyWithImpl<$Res, $Val extends CustomerEvent>
       input: null == input
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
-              as InputCreateCustomerModel,
+              as CreateCustomerModel,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $InputCreateCustomerModelCopyWith<$Res> get input {
-    return $InputCreateCustomerModelCopyWith<$Res>(_value.input, (value) {
+  $CreateCustomerModelCopyWith<$Res> get input {
+    return $CreateCustomerModelCopyWith<$Res>(_value.input, (value) {
       return _then(_value.copyWith(input: value) as $Val);
     });
   }
@@ -106,10 +106,10 @@ abstract class _$$CreateCustomerImplCopyWith<$Res>
       __$$CreateCustomerImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({InputCreateCustomerModel input});
+  $Res call({CreateCustomerModel input});
 
   @override
-  $InputCreateCustomerModelCopyWith<$Res> get input;
+  $CreateCustomerModelCopyWith<$Res> get input;
 }
 
 /// @nodoc
@@ -129,7 +129,7 @@ class __$$CreateCustomerImplCopyWithImpl<$Res>
       input: null == input
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
-              as InputCreateCustomerModel,
+              as CreateCustomerModel,
     ));
   }
 }
@@ -140,7 +140,7 @@ class _$CreateCustomerImpl implements _CreateCustomer {
   const _$CreateCustomerImpl({required this.input});
 
   @override
-  final InputCreateCustomerModel input;
+  final CreateCustomerModel input;
 
   @override
   String toString() {
@@ -168,7 +168,7 @@ class _$CreateCustomerImpl implements _CreateCustomer {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(InputCreateCustomerModel input) createCustomer,
+    required TResult Function(CreateCustomerModel input) createCustomer,
   }) {
     return createCustomer(input);
   }
@@ -176,7 +176,7 @@ class _$CreateCustomerImpl implements _CreateCustomer {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(InputCreateCustomerModel input)? createCustomer,
+    TResult? Function(CreateCustomerModel input)? createCustomer,
   }) {
     return createCustomer?.call(input);
   }
@@ -184,7 +184,7 @@ class _$CreateCustomerImpl implements _CreateCustomer {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(InputCreateCustomerModel input)? createCustomer,
+    TResult Function(CreateCustomerModel input)? createCustomer,
     required TResult orElse(),
   }) {
     if (createCustomer != null) {
@@ -223,11 +223,11 @@ class _$CreateCustomerImpl implements _CreateCustomer {
 }
 
 abstract class _CreateCustomer implements CustomerEvent {
-  const factory _CreateCustomer(
-      {required final InputCreateCustomerModel input}) = _$CreateCustomerImpl;
+  const factory _CreateCustomer({required final CreateCustomerModel input}) =
+      _$CreateCustomerImpl;
 
   @override
-  InputCreateCustomerModel get input;
+  CreateCustomerModel get input;
   @override
   @JsonKey(ignore: true)
   _$$CreateCustomerImplCopyWith<_$CreateCustomerImpl> get copyWith =>
