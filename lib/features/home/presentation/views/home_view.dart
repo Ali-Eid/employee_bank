@@ -347,7 +347,7 @@ class CustomerTempWidget extends StatefulWidget {
 
 class _CustomerTempWidgetState extends State<CustomerTempWidget> {
   late SyncBloc syncBloc;
-  // Timer? _timer;
+  Timer? _timer;
   @override
   void initState() {
     syncBloc = instance<SyncBloc>();
@@ -381,8 +381,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
       )));
     }
 
-    // _timer = Timer.periodic(
-    //   Duration(seconds: ((widget.index + 1) * 10)),
+    // _timer = Timer.periodic(Duration(seconds: ((widget.index + 1) * 10)),
     //   (timer) async {
     // if (await instance<NetworkInfo>().isConnected) {
     //   (temp?.hasError ?? false) || (temp?.hasSuccess ?? false)
@@ -396,7 +395,7 @@ class _CustomerTempWidgetState extends State<CustomerTempWidget> {
 
   @override
   void dispose() {
-    // _timer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -912,6 +911,29 @@ class AttachmentsWidget extends StatefulWidget {
 }
 
 class _AttachmentsWidgetState extends State<AttachmentsWidget> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    _timer = Timer.periodic(
+      const Duration(seconds: 3),
+      (timer) async {
+        if (widget.model.setAttachmentTable.every(
+          (element) => element.isUploaded,
+        )) {
+          objectBox.updateCustomerAttachments(widget.model.id, true);
+        }
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(

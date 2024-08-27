@@ -124,6 +124,15 @@ class ObjectBox {
     }
   }
 
+  Future<void> updateCustomerAttachments(
+      int id, bool attachmentsSuccessfully) async {
+    CustomerTable? customerTable = customerBox.get(id);
+    if (customerTable != null) {
+      customerTable.attachmentsSuccessfully = attachmentsSuccessfully;
+      customerBox.put(customerTable);
+    }
+  }
+
   Future<void> updateAttachmentStatus(int id, bool status) async {
     SetAttachmentDataTable? attachmentData = attachmentBox.get(id);
     if (attachmentData != null) {
